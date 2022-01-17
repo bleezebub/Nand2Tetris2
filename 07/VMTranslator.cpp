@@ -23,15 +23,22 @@ string getoutstring(string input){
   }
   return "error";
 }
+void Translator();
 int main(int argc, char *argv[]){
   string input = argv[1];
   string output = getoutstring(input);
-  cout<<input<<endl;
-  cout<<output<<endl;
   assert(checkextensionvm(input));
   assert(checkextensionasm(output));
-
   freopen(input.c_str(), "r", stdin);
   freopen(output.c_str(), "w", stdout);
-  cout<<"hello"<<endl;
+  Translator();
+}
+void parse(string line){
+  
+}
+void Translator(){
+  std::string line;
+  while (std::getline(std::cin, line)){
+    parse(line);
+  }
 }
