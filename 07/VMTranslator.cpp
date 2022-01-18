@@ -1,5 +1,6 @@
 #include "bits/stdc++.h"
 using namespace std;
+int inequality_count = 1;
 //asserts that file extensions are correct
 bool checkextensionvm(string fn){
   if(fn.substr(fn.find_last_of(".") + 1) == "vm") {
@@ -57,7 +58,7 @@ void push_constant(std::vector<string> commands){
     cout<<"@SP"<<endl;
     cout<<"M=M+1"<<endl;
 }
-/*Implements add*/
+/*Implements add, sub, and, or*/
 void arth_command(vector<string> commands){
   string line="";
   if(commands[0] == "add")
@@ -86,10 +87,7 @@ void arth_command(vector<string> commands){
   cout<<"@SP"<<endl;
   cout<<"M=M+1"<<endl;
 }
-
-void comp_command(vector<string> commands){
-  
-}
+// commands of the type x=!x and x = -x
 void uni_command(vector<string> commands){
   string line = "";
   if(commands[0] == "neg")
@@ -105,6 +103,41 @@ void uni_command(vector<string> commands){
   cout<<"@SP"<<endl;
   cout<<"M=M+1"<<endl;
 }
+
+void comp_command(vector<string> commands){
+    string line = "";
+    if(commands[0] == "eq")
+      line = "D;JEQ";
+    else if(commands[0] == "gt")
+      line = "D;JGT";
+    else if(commands[0] == "lt")
+      line = "D;JLT";
+
+    cout<<"@SP"<<endl;
+    cout<<"M=M-1"<<endl;
+    cout<<"A=M"<<endl;
+    cout<<"D=M"<<endl;
+    cout<<"@SP"<<endl;
+    cout<<"M=M-1"<<endl;
+    cout<<"A=M"<<endl;
+    cout<<"D=M-D"<<endl;
+    cout<<"@EQ"<<inequality_count<<endl;
+    assert(line!="");
+    cout<<line<<endl;
+
+    vector<string> req = {"push", "constant", "0"};
+    push_constant(req);
+    cout<<"@endEQ"<<inequality_count<<endl;
+    cout<<"0;JMP"<<endl;
+
+    cout<<"(EQ"<<inequality_count<<")"<<endl;
+    vector<string> req1 = {"push", "constant", "1"};
+    push_constant(req1);
+    cout<<"(endEQ"<<inequality_count<<")"<<endl;
+
+    inequality_count++;
+    return ;
+}
 void push_command(vector<string> commands){
   assert(commands[0] == "push");
 
@@ -114,7 +147,8 @@ void push_command(vector<string> commands){
   }
 
 }
-
+//Function where everything really happens
+//each command is converted into asm
 void translate(string line){
   vector<string> commands = getparsewords(line);
   assert(commands.size()>0);
@@ -139,6 +173,7 @@ void translate(string line){
     return;
   }
 }
+// This is the function that takes in the file and splits into several commands
 void Translator(){
   std::string line;
   while (std::getline(std::cin, line)){
