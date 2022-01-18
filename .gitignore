@@ -32,6 +32,6 @@
 *.app
 
 # input output files
-.asm
-.vm
-.in
+*.asm
+*.vm
+*.in
