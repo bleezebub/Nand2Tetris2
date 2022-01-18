@@ -58,24 +58,53 @@ void push_constant(std::vector<string> commands){
     cout<<"M=M+1"<<endl;
 }
 /*Implements add*/
-void add_command(vector<string> commands){
-  cout<<"@0"<<endl;
+void arth_command(vector<string> commands){
+  string line="";
+  if(commands[0] == "add")
+    line = "D=D+M";
+  else if(commands[0] == "sub")
+    line = "D=M-D";
+  else if(commands[0] == "and")
+    line = "D=D&M";
+  else if(commands[0] == "or")
+    line = "D=D|M";
+
+  cout<<"@SP"<<endl;
   cout<<"M=M-1"<<endl;
-  cout<<"@0"<<endl;
+  cout<<"@SP"<<endl;
   cout<<"A=M"<<endl;
   cout<<"D=M"<<endl;
-  cout<<"@0"<<endl;
+  cout<<"@SP"<<endl;
   cout<<"M=M-1"<<endl;
-  cout<<"@0"<<endl;
+  cout<<"@SP"<<endl;
   cout<<"A=M"<<endl;
-  cout<<"D=D+M"<<endl;
-  cout<<"@0"<<endl;
+  assert(line!="");
+  cout<<line<<endl;
+  cout<<"@SP"<<endl;
   cout<<"A=M"<<endl;
   cout<<"M=D"<<endl;
-  cout<<"@0"<<endl;
+  cout<<"@SP"<<endl;
   cout<<"M=M+1"<<endl;
 }
 
+void comp_command(vector<string> commands){
+  
+}
+void uni_command(vector<string> commands){
+  string line = "";
+  if(commands[0] == "neg")
+    line = "M=-M";
+  else if(commands[0]=="not")
+    line = "M=!M";
+
+  cout<<"@SP"<<endl;
+  cout<<"M=M-1"<<endl;
+  cout<<"A=M"<<endl;
+  assert(line!="");
+  cout<<line<<endl;
+  cout<<"@SP"<<endl;
+  cout<<"M=M+1"<<endl;
+}
 void push_command(vector<string> commands){
   assert(commands[0] == "push");
 
@@ -85,6 +114,7 @@ void push_command(vector<string> commands){
   }
 
 }
+
 void translate(string line){
   vector<string> commands = getparsewords(line);
   assert(commands.size()>0);
@@ -94,8 +124,18 @@ void translate(string line){
     return;
   }
 
-  if(commands[0] == "add"){
-    add_command(commands);
+  if(commands[0] == "add" || commands[0] == "sub" || commands[0] == "ad" || commands[0] == "or"){
+    arth_command(commands);
+    return;
+  }
+
+  if(commands[0] == "eq" || commands[0] == "gt" || commands[0] == "lt"){
+    comp_command(commands);
+    return;
+  }
+
+  if(commands[0] == "not" || commands[0] == "neg"){
+    uni_command(commands);
     return;
   }
 }
